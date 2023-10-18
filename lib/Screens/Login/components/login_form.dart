@@ -5,8 +5,6 @@ import '../../../constants.dart';
 import '../../Signup/signup_screen.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
-import 'package:fluttertoast/fluttertoast.dart';
-
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -170,91 +168,3 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 }
-
-/*void login(String email , password) async {
-
-  try{
-//http://hems.42web.io/api/login
-    Response response = await post(
-        Uri.parse('http://localhost:8000/api/login'),
-        body: {
-          'email' : email,
-          'password' : password
-        }
-    );
-
-    if(response.statusCode == 200){
-
-      var data = response.body.toString();
-      print(data);
-      print('Login successfully');
-
-    }else {
-      print('failed');
-    }
-  }catch(e){
-    print(e.toString()+" \nexception");
-  }
-}*/
-/*
-void login(String email, String password) async {
-  try {
-    Response response = await post(
-      Uri.parse('https://fyphems.000webhostapp.com/api/login'),
-      body: {
-        'email': email,
-        'password': password,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      var success = data['success'];
-      var result = data['data'];
-      var message = data['message'];
-
-      if (success) {
-        var token = result['token'];
-        var name = result['name'];
-        print('Token: $token');
-        print('Name: $name');
-        print(message);
-
-        // Show a success toast
-        Fluttertoast.showToast(
-          msg: 'Login successful',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-        );
-      } else {
-        print('Login failed: $message');
-
-        // Show a failure toast
-        Fluttertoast.showToast(
-          msg: 'Login failed: $message',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-        );
-      }
-    } else {
-      print('Login failed');
-
-      // Show a failure toast
-      Fluttertoast.showToast(
-        msg: 'Login failed',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-      );
-    }
-  } catch (e) {
-    print('$e \nException occurred');
-
-    // Show a failure toast
-    Fluttertoast.showToast(
-      msg: 'An error occurred during login',
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-    );
-  }
-}
-*/
