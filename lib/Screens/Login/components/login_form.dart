@@ -8,9 +8,6 @@ import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 
 
-
-import 'package:flutter/material.dart';
-
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
 
@@ -21,12 +18,69 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  String loginStatus = '';
+  void login(String email, String password) async {
+    try {
+      Response response = await post(
+        Uri.parse('https://fyphems.000webhostapp.com/api/login'),
+        body: {
+          'email': email,
+          'password': password,
+        },
+      );
 
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        var success = data['success'];
+        var result = data['data'];
+        var message = data['message'];
+
+        if (success) {
+          var token = result['token'];
+          var name = result['name'];
+          print('Token: $token');
+          print('Name: $name');
+          print(message);
+
+          // Set the login status message for successful login
+          setState(() {
+            loginStatus = 'Login successful';
+          });
+        } else {
+          print('Login failed: $message');
+
+          // Set the login status message for failed login
+          setState(() {
+            loginStatus = 'Login failed: $message';
+          });
+        }
+      } else {
+        print('Login failed');
+
+        // Set the login status message for failed login
+        setState(() {
+          loginStatus = 'Invalid Login or Password';
+        });
+      }
+    } catch (e) {
+      print('$e \nException occurred');
+
+      // Set the login status message for errors
+      setState(() {
+        loginStatus = 'An error occurred during login';
+      });
+    }
+  }
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+  void changeText(String result) {
+    setState(() {
+      loginStatus = result;
+    });
   }
 
   @override
@@ -71,6 +125,11 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                 ),
               ),
+              Text(
+                loginStatus,
+                style: TextStyle(
+                  color: loginStatus.contains('Invalid Login or Password') ? Colors.red : Colors.green,
+                ),),
               const SizedBox(height: defaultPadding),
               Hero(
                 tag: "login_btn",
@@ -80,12 +139,16 @@ class _LoginFormState extends State<LoginForm> {
                       emailController.text.toString(),
                       passwordController.text.toString(),
                     );
+                    changeText(loginStatus);
                   },
                   child: Text(
                     "Login".toUpperCase(),
                   ),
                 ),
+
               ),
+          // Display login status message
+
               const SizedBox(height: defaultPadding),
               AlreadyHaveAnAccountCheck(
                 press: () {
@@ -133,6 +196,7 @@ class _LoginFormState extends State<LoginForm> {
     print(e.toString()+" \nexception");
   }
 }*/
+/*
 void login(String email, String password) async {
   try {
     Response response = await post(
@@ -193,4 +257,4 @@ void login(String email, String password) async {
     );
   }
 }
-
+*/
