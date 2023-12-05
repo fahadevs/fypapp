@@ -72,7 +72,7 @@ class _UserInputFormState extends State<UserInputForm> {
   }
   Future<http.Response> sendFormDataToApi() {
     // Replace the URL with your REST API endpoint
-    final url = Uri.parse('https://your-api-endpoint.com/update-data');
+    final url = Uri.parse('localhost:8000/api/appliance');
     final data = {
       'applianceName': textField1Value,
       'wattage': textField2Value,
@@ -87,57 +87,60 @@ class _UserInputFormState extends State<UserInputForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Appliances Usuage Form'),
+        title: Text('Add Appliances'),
         backgroundColor: kPrimaryColor,
+        foregroundColor: kPrimaryLightColor,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-        key: _formKey,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+          key: _formKey,
+          
+          child:SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: TextField(
+                    controller: textField1Controller,
+                    decoration: InputDecoration(labelText: 'Enter Appliance Name'),
         
-        child:SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: TextField(
-                  controller: textField1Controller,
-                  decoration: InputDecoration(labelText: 'Enter Appliance Name'),
-
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: TextFormField(
-                  controller: textField2Controller,
-                  decoration: InputDecoration(labelText: 'Enter Wattage 0-3000W'),
-                  keyboardType: TextInputType.number,
-                  validator: _validateWattage,
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: TextFormField(
+                    controller: textField2Controller,
+                    decoration: InputDecoration(labelText: 'Enter Wattage 0-3000W'),
+                    keyboardType: TextInputType.number,
+                    validator: _validateWattage,
+                  ),
+        
                 ),
-
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: TextFormField(
-                  controller: textField3Controller,
-                  decoration: InputDecoration(labelText: 'Enter Appliance Consumption per day in minutes'),
-                  keyboardType: TextInputType.number,
-                  validator: _validateConsumption,
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: TextFormField(
+                    controller: textField3Controller,
+                    decoration: InputDecoration(labelText: 'Enter Appliance consumption/day in mins'),
+                    keyboardType: TextInputType.number,
+                    validator: _validateConsumption,
+                  ),
                 ),
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: Text('Submit'),
-              ),
-              SizedBox(height: 16.0),
-              Text('Text Field 1 Value: $textField1Value'),
-              Text('Text Field 2 Value: $textField2Value'),
-              Text('Text Field 3 Value: $textField3Value'),
-            ],
+                SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: _submitForm,
+                  child: Text('Add Device'),
+                ),
+                SizedBox(height: 16.0),
+                Text('Text Field 1 Value: $textField1Value'),
+                Text('Text Field 2 Value: $textField2Value'),
+                Text('Text Field 3 Value: $textField3Value'),
+              ],
+            ),
           ),
         ),
-      ),
+        ),
       ),
     );
   }

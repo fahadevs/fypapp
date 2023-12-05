@@ -26,7 +26,7 @@ class _SignUpFormState extends State<SignUpForm> {
   void register(String name, String email, String password, String c_password) async {
     try {
       Response response = await post(
-        Uri.parse('https://fyphems.000webhostapp.com/api/register'),
+        Uri.parse('localhost:8000/api/register'),
         body: {
           'name': name,
           'email': email,

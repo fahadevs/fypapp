@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Signup/signup_screen.dart';
+import '../../UserInput/UserInputForm.dart';
+import '../../functionality/appliancedata.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 
@@ -20,7 +22,7 @@ class _LoginFormState extends State<LoginForm> {
   void login(String email, String password) async {
     try {
       Response response = await post(
-        Uri.parse('https://fyphems.000webhostapp.com/api/login'),
+        Uri.parse('localhost:8000/api/login'),
         body: {
           'email': email,
           'password': password,
@@ -36,14 +38,25 @@ class _LoginFormState extends State<LoginForm> {
         if (success) {
           var token = result['token'];
           var name = result['name'];
+          var user_id=result['user_id'];
           print('Token: $token');
           print('Name: $name');
+          print('user Id: $user_id');
           print(message);
 
           // Set the login status message for successful login
           setState(() {
             loginStatus = 'Login successful';
           });
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return ApplianceScreen(token: token,user_Id:user_id); // Pass the token to the constructor
+              },
+            ),
+          );
+
         } else {
           print('Login failed: $message');
 
@@ -141,7 +154,11 @@ class _LoginFormState extends State<LoginForm> {
                   },
                   child: Text(
                     "Login".toUpperCase(),
+                    style: TextStyle(
+                      color: Colors.white
+                    ),
                   ),
+
                 ),
 
               ),
