@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:fypapp/main.dart';
 
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Signup/signup_screen.dart';
-import '../../UserInput/UserInputForm.dart';
-import '../../functionality/appliancedata.dart';
+import '../../Appliance//addAppliances.dart';
+import '../../Appliance/appliancedata.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
+import 'package:provider/provider.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -19,10 +21,17 @@ class _LoginFormState extends State<LoginForm> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   String loginStatus = '';
+  late AuthProvider authProviderInstance; // Declare as late
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      authProviderInstance = Provider.of<AuthProvider>(context, listen: false);
+    });}
   void login(String email, String password) async {
     try {
       Response response = await post(
-        Uri.parse('localhost:8000/api/login'),
+        Uri.parse('http://$apiAddress:8000/api/login'),
         body: {
           'email': email,
           'password': password,
@@ -39,6 +48,7 @@ class _LoginFormState extends State<LoginForm> {
           var token = result['token'];
           var name = result['name'];
           var user_id=result['user_id'];
+          authProviderInstance.setAuthData(token, user_id);
           print('Token: $token');
           print('Name: $name');
           print('user Id: $user_id');
@@ -52,7 +62,7 @@ class _LoginFormState extends State<LoginForm> {
             context,
             MaterialPageRoute(
               builder: (context) {
-                return ApplianceScreen(token: token,user_Id:user_id); // Pass the token to the constructor
+                return ApplianceScreen(token: token,user_Id:user_id.toString()); // Pass the token to the constructor
               },
             ),
           );
@@ -96,92 +106,98 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: 16.0,
-          right: 16.0,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 16.0,
-        ),
-        child: Form(
-          child: Column(
-            children: [
-              TextFormField(
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-                cursorColor: kPrimaryColor,
-                onSaved: (email) {},
-                decoration: InputDecoration(
-                  hintText: "Your email",
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.all(defaultPadding),
-                    child: Icon(Icons.person),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: defaultPadding),
-                child: TextFormField(
-                  controller: passwordController,
-                  textInputAction: TextInputAction.done,
-                  obscureText: true,
+      return SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            bottom: MediaQuery
+                .of(context)
+                .viewInsets
+                .bottom + 16.0,
+          ),
+          child: Form(
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
                   cursorColor: kPrimaryColor,
+                  onSaved: (email) {},
                   decoration: InputDecoration(
-                    hintText: "Your password",
+                    hintText: "Your email",
                     prefixIcon: Padding(
                       padding: const EdgeInsets.all(defaultPadding),
-                      child: Icon(Icons.lock),
+                      child: Icon(Icons.person),
                     ),
                   ),
                 ),
-              ),
-              Text(
-                loginStatus,
-                style: TextStyle(
-                  color: loginStatus.contains('Invalid Login or Password') ? Colors.red : Colors.green,
-                ),),
-              const SizedBox(height: defaultPadding),
-              Hero(
-                tag: "login_btn",
-                child: ElevatedButton(
-                  onPressed: () {
-                    login(
-                      emailController.text.toString(),
-                      passwordController.text.toString(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: defaultPadding),
+                  child: TextFormField(
+                    controller: passwordController,
+                    textInputAction: TextInputAction.done,
+                    obscureText: true,
+                    cursorColor: kPrimaryColor,
+                    decoration: InputDecoration(
+                      hintText: "Your password",
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.all(defaultPadding),
+                        child: Icon(Icons.lock),
+                      ),
+                    ),
+                  ),
+                ),
+                Text(
+                  loginStatus,
+                  style: TextStyle(
+                    color: loginStatus.contains('Invalid Login or Password')
+                        ? Colors.red
+                        : Colors.green,
+                  ),),
+                const SizedBox(height: defaultPadding),
+                Hero(
+                  tag: "login_btn",
+                  child: ElevatedButton(
+                    onPressed: () {
+                      login(
+                        emailController.text.toString(),
+                        passwordController.text.toString(),
+                      );
+                      changeText(loginStatus);
+                    },
+                    child: Text(
+                      "Login".toUpperCase(),
+                      style: TextStyle(
+                          color: Colors.white
+                      ),
+                    ),
+
+                  ),
+
+                ),
+                // Display login status message
+
+                const SizedBox(height: defaultPadding),
+                AlreadyHaveAnAccountCheck(
+                  press: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const SignUpScreen();
+                        },
+                      ),
                     );
-                    changeText(loginStatus);
                   },
-                  child: Text(
-                    "Login".toUpperCase(),
-                    style: TextStyle(
-                      color: Colors.white
-                    ),
-                  ),
-
                 ),
-
-              ),
-          // Display login status message
-
-              const SizedBox(height: defaultPadding),
-              AlreadyHaveAnAccountCheck(
-                press: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const SignUpScreen();
-                      },
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: defaultPadding),
-            ],
+                const SizedBox(height: defaultPadding),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
+
   }
-}

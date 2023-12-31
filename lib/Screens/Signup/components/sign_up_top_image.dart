@@ -11,13 +11,7 @@ class SignUpScreenTopImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          "Create New Account".toUpperCase(),
-          style: TextStyle(fontWeight: FontWeight.bold,
-          color: kPrimaryColor,
-          fontSize: 20),
-        ),
-        SizedBox(height: defaultPadding),
+        
         Row(
           children: [
             const Spacer(),

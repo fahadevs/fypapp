@@ -51,18 +51,19 @@ class MobileSignupScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         const SignUpScreenTopImage(),
-        Row(
-          children: const [
-            Spacer(),
-            Expanded(
-              flex: 8,
-
-              child: SignUpForm(),
-            ),
-            Spacer(),
-          ],
+        SingleChildScrollView(
+          child: Row(
+            children: const [
+              Spacer(),
+              Expanded(
+                flex: 8,
+          
+                child: SignUpForm(),
+              ),
+              Spacer(),
+            ],
+          ),
         ),
-        // const SocalSignUp()
       ],
     );
   }
